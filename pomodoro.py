@@ -1,12 +1,17 @@
 import pygame
 from pathlib import Path
 
-def fade(surface, screen, coord):
-        for alpha in range(50):
+def fade(surface, screen, coord, r = 50):
+        for alpha in range(r):
             surface.set_alpha(alpha)
             screen.blit(surface, coord)
             pygame.display.flip()
             pygame.time.delay(30)
+
+def timer(screen):
+    timerFont = pygame.font.Font('fonts\LexendGiga-ExtraLight.ttf', 80)
+    time = timerFont.render("30:00", False, BLACK)
+    screen.blit(time, ((width // 3), (height // 3) - 10))
 
 # basic initilizations/setup
 pygame.init()
@@ -15,8 +20,8 @@ width, height = 768, 432
 screen = pygame.display.set_mode((width, height))
 clock = pygame.time.Clock()
 running = True
-clicked = False
-
+hasbegun = False
+ticking = False
 # background and colors
 BG = (223, 235, 247) 
 BLACK = (0, 0, 0)
@@ -50,31 +55,34 @@ while running:
             running = False
 
         mouse = pygame.mouse.get_pos()
-        if not clicked:
+        if not hasbegun and not ticking:
             if (width // 2) - 10 <= mouse[0] <= (width // 2) + 70 and 198 <= mouse[1] <= 218:
                 pygame.draw.rect(screen, DARK_GREY, ((width // 2) - 10, 198, 70, 20))
                 readyFont = button_font.render("Ready?", False, WHITE)
                 screen.blit(readyFont, (width // 2, 200))
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    clicked = True
+                    pygame.draw.rect(screen, GREY, ((width // 2) - 10, 198, 70, 20))
+                    screen.blit(beginFont, (width // 2, 200))
+                    pygame.display.flip()
+                    for alpha in range(0, 256, 3):
+                        headerBG.set_alpha(alpha)
+                        buttonBG.set_alpha(alpha)
+                        screen.blit(headerBG, (192, 127))
+                        screen.blit(buttonBG, ((width // 2) - 10, 198))
+                        pygame.display.flip()
+                        pygame.time.delay(30)
+                    hasbegun = True
+                    ticking = True
             else:
                 pygame.draw.rect(screen, GREY, ((width // 2) - 10, 198, 70, 20))
                 readyFont = button_font.render("Ready?", False, BLACK)
                 screen.blit(readyFont, (width // 2, 200))
             pygame.display.flip()
 
-    if clicked:
-        pygame.draw.rect(screen, GREY, ((width // 2) - 10, 198, 70, 20))
-        screen.blit(beginFont, (width // 2, 200))
+    if hasbegun:
+        pomodoroText = header_font.render("Pomodoro", False, GREY)
+        screen.blit(pomodoroText, (width // 3, (height // 3) + 20))
         pygame.display.flip()
-        for alpha in range(0, 256, 1):
-            headerBG.set_alpha(alpha)
-            buttonBG.set_alpha(alpha)
-            screen.blit(headerBG, (192, 127))
-            screen.blit(buttonBG, ((width // 2) - 10, 198))
-            pygame.display.flip()
-            pygame.time.delay(10)
-        clicked = False
-                
+        timer(screen)
                 
 pygame.quit()
