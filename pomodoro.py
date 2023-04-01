@@ -8,10 +8,20 @@ def fade(surface, screen, coord, r = 50):
             pygame.display.flip()
             pygame.time.delay(30)
 
-def timer(screen):
-    timerFont = pygame.font.Font('fonts\LexendGiga-ExtraLight.ttf', 80)
-    time = timerFont.render("30:00", False, BLACK)
-    screen.blit(time, ((width // 3), (height // 3) - 10))
+def timer(screen, time):
+    timerFont = pygame.font.Font('fonts\LexendGiga-ExtraLight.ttf', 100)
+    for minute in range(time[0], -1, -1):
+        for seconds in range(time[1], -1, -1):
+            print(f"{minute:02d}:{seconds:02d}")
+            timeText = timerFont.render(f"{minute:02d}:{seconds:02d}", False, BLACK)
+            screen.blit(timeText, ((width // 3) - 30, (height // 3) - 30))
+            pygame.display.flip()
+            pygame.time.delay(900)
+            timeText = timerFont.render(f"{minute:02d}:{seconds:02d}", False, BG)
+            screen.blit(timeText, ((width // 3) - 30, (height // 3) - 30))
+            pygame.display.flip()
+        if time[1] == 0:
+            time[1] = 59
 
 # basic initilizations/setup
 pygame.init()
@@ -33,6 +43,7 @@ pygame.display.flip()
 
 # font setup
 header_font = pygame.font.Font('fonts\LexendGiga-Regular.ttf', 40)
+subheader_font = pygame.font.Font('fonts\LexendGiga-ExtraLight.ttf', 55)
 button_font = pygame.font.Font('fonts\LexendGiga-Thin.ttf')
 headerBG = pygame.Surface((450, 50))
 buttonBG = pygame.Surface((70, 20))
@@ -80,9 +91,14 @@ while running:
             pygame.display.flip()
 
     if hasbegun:
-        pomodoroText = header_font.render("Pomodoro", False, GREY)
-        screen.blit(pomodoroText, (width // 3, (height // 3) + 20))
+        pomodoroText = subheader_font.render("Pomodoro", False, DARK_GREY)
+        screen.blit(pomodoroText, ((width // 3) - 50, (height - 400)))
         pygame.display.flip()
-        timer(screen)
+        timer(screen, [0, 10])
+        finishedText = subheader_font.render("Session Completed!", False, BLACK)
+        fade(finishedText, screen, ((width - 725), (height - 300)))
+        # timer(screen, [0, 5])
+        ticking = False
+        hasbegun = False
                 
 pygame.quit()
