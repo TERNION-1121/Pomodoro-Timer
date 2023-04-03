@@ -55,10 +55,7 @@ pygame.display.flip()
 header_font = pygame.font.Font('fonts\LexendGiga-Regular.ttf', 40)
 subheader_font = pygame.font.Font('fonts\LexendGiga-ExtraLight.ttf', 55)
 button_font = pygame.font.Font('fonts\LexendGiga-Thin.ttf')
-headerBG = pygame.Surface((450, 50))
-buttonBG = pygame.Surface((70, 20))
-headerBG.fill(BG)
-buttonBG.fill(BG)
+
 
 # event loop
 while running:
@@ -79,6 +76,8 @@ while running:
                 elif (width // 2) - 10 <= mouse[0] <= (width // 2) + 70 and 198 <= mouse[1] <= 218:
                     displayButton(DARK_GREY, ((width // 2) - 30, 200, 70, 20), button_font, "Ready?", WHITE, (width // 2 - 20, 202))
                     if event.type == pygame.MOUSEBUTTONDOWN:
+                        headerBG = pygame.Surface((450, 50))
+                        buttonBG = pygame.Surface((70, 20))
                         displayButton(GREY, (width // 2 - 30, 200, 70, 20), button_font, "Begin!", BLACK, (width // 2 - 20, 202))
                         fade(s1c1 = (headerBG, (178, 128)), s2c2 = (buttonBG, (width // 2 - 30, 200)))
                         status = "ticking"
@@ -93,14 +92,14 @@ while running:
             
             case "break":
                 if not breakStarted:
-                    displayButton(GREY, (318, 218, 150, 20), button_font, "Begin Break?", BLACK, (335, 220), True)
+                    displayButton(GREY, (318, 218, 150, 20), button_font, "Begin Break?", BLACK, (345, 220), True)
                     breakStarted = True
                 elif (width // 2) - 50 <= mouse[0] <= (width // 2) + 50 and 218 <= mouse[1] <= 238:
-                    displayButton(DARK_GREY, (318, 218, 150, 20), button_font, "Begin Break?", WHITE, (335, 220))
+                    displayButton(DARK_GREY, (318, 218, 150, 20), button_font, "Begin Break?", WHITE, (345, 220))
                     if event.type == pygame.MOUSEBUTTONDOWN:
-                        displayButton(GREY, (318, 218, 150, 20), button_font, "Begin the chill!", BLACK, (328, 220))
                         buttonBG = pygame.Surface((150, 20))
                         buttonBG.fill(BG)
+                        displayButton(GREY, (318, 218, 150, 20), button_font, "Begin the chill!", BLACK, (335, 220))
                         fade(s1c1 = (buttonBG, (318, 218)))
                         screen.fill(BG)
                         timer([0, 0])
@@ -108,6 +107,6 @@ while running:
                         started = False
                         breakStarted = False
                 else:
-                    displayButton(GREY, (318, 218, 150, 20), button_font, "Begin Break?", BLACK, (335, 220))
+                    displayButton(GREY, (318, 218, 150, 20), button_font, "Begin Break?", BLACK, (345, 220))
                 
 pygame.quit()
