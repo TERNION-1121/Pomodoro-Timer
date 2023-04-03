@@ -38,10 +38,14 @@ pygame.init()
 width, height = 768, 432
 screen = pygame.display.set_mode((width, height))
 clock = pygame.time.Clock()
-running = True
-status = "begin"
-started = False
-breakStarted = False
+
+# loop variables
+running     =   True
+startScreenFade     =   False
+breakScreenFade  = False
+endScreenFade = False
+status      =   "end"
+
 # background and colors
 BG = (223, 235, 247) 
 BLACK = (0, 0, 0)
@@ -53,7 +57,9 @@ pygame.display.flip()
 
 # font setup
 header_font = pygame.font.Font('fonts\LexendGiga-Regular.ttf', 40)
-subheader_font = pygame.font.Font('fonts\LexendGiga-ExtraLight.ttf', 55)
+subheader_font_medium = pygame.font.Font('fonts\LexendGiga-ExtraLight.ttf', 55)
+subheader_font_small = pygame.font.Font('fonts\LexendGiga-ExtraLight.ttf', 40)
+subheader_font_large = pygame.font.Font('fonts\LexendGiga-ExtraLight.ttf', 80)
 button_font = pygame.font.Font('fonts\LexendGiga-Thin.ttf')
 
 
@@ -67,17 +73,19 @@ while running:
         match status:
 
             case "begin":
-                if not started:
+                if not startScreenFade:
                     mainFont = header_font.render("Pomodoro Timer", False, BLACK)
                     fade(s1c1 = (mainFont, (178, 128)))
                     displayButton(GREY, ((width // 2) - 30, 200, 70, 20), button_font, "Ready?", BLACK, (width // 2 - 20, 202), True)
-                    started = True
+                    startScreenFade = True
 
                 elif (width // 2) - 10 <= mouse[0] <= (width // 2) + 70 and 198 <= mouse[1] <= 218:
                     displayButton(DARK_GREY, ((width // 2) - 30, 200, 70, 20), button_font, "Ready?", WHITE, (width // 2 - 20, 202))
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         headerBG = pygame.Surface((450, 50))
                         buttonBG = pygame.Surface((70, 20))
+                        headerBG.fill(BG)
+                        buttonBG.fill(BG)
                         displayButton(GREY, (width // 2 - 30, 200, 70, 20), button_font, "Begin!", BLACK, (width // 2 - 20, 202))
                         fade(s1c1 = (headerBG, (178, 128)), s2c2 = (buttonBG, (width // 2 - 30, 200)))
                         status = "ticking"
@@ -86,27 +94,52 @@ while running:
 
             case "ticking":
                 timer([0, 1])
-                finishedText = subheader_font.render("Session Completed!", False, BLACK)
+                finishedText = subheader_font_medium.render("Session Completed!", False, BLACK)
                 fade(s1c1 = (finishedText,  (width - 725, height - 300)))
                 status = "break"
             
             case "break":
-                if not breakStarted:
+                if not breakScreenFade:
                     displayButton(GREY, (318, 218, 150, 20), button_font, "Begin Break?", BLACK, (345, 220), True)
-                    breakStarted = True
-                elif (width // 2) - 50 <= mouse[0] <= (width // 2) + 50 and 218 <= mouse[1] <= 238:
+                    breakScreenFade = True
+                elif 318 <= mouse[0] <= 468 and 218 <= mouse[1] <= 238:
                     displayButton(DARK_GREY, (318, 218, 150, 20), button_font, "Begin Break?", WHITE, (345, 220))
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         buttonBG = pygame.Surface((150, 20))
+                        headerBG = pygame.Surface((750, 60))
                         buttonBG.fill(BG)
+                        headerBG.fill(BG)
                         displayButton(GREY, (318, 218, 150, 20), button_font, "Begin the chill!", BLACK, (335, 220))
-                        fade(s1c1 = (buttonBG, (318, 218)))
+                        fade(s1c1 = (buttonBG, (318, 218)), s2c2 = (headerBG, (30, 145)))
                         screen.fill(BG)
                         timer([0, 0])
-                        status = "begin"
-                        started = False
-                        breakStarted = False
+                        status = "end"
                 else:
                     displayButton(GREY, (318, 218, 150, 20), button_font, "Begin Break?", BLACK, (345, 220))
                 
+            case "end":
+                endFont1 = subheader_font_small.render("Pomodoro Session", False, BLACK)
+                endFont2 = subheader_font_large.render("Complete!", False, BLACK)
+                if not endScreenFade:
+                    fade(sc1 = (endFont1, (160, 100)), sc2 = (endFont2, (140, 130)))
+                    displayButton(GREY, (200, 245, 130, 20), button_font, "Home Screen?", BLACK, (210, 247), True)
+                    displayButton(GREY, (500, 245, 70, 20), button_font, "Quit?", BLACK, (514, 247), True)
+                    endScreenFade = True
+                elif 200 <= mouse[0] <= 330 and 245 <= mouse[1] <= 265:
+                    displayButton(DARK_GREY, (200, 245, 130, 20), button_font, "Home Screen?", WHITE, (210, 247))
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        startScreenFade = False
+                        breakScreenFade = False
+                        endScreenFade = False
+                        status = "begin"
+                        screen.fill(BG)
+                elif 500 <= mouse[0] <= 570 and 245 <= mouse[1] <= 265:
+                    displayButton(DARK_GREY, (500, 245, 70, 20), button_font, "Quit?", WHITE, (514, 247))
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        running = False
+                else:
+                    displayButton(GREY, (200, 245, 130, 20), button_font, "Home Screen?", BLACK, (210, 247))
+                    displayButton(GREY, (500, 245, 70, 20), button_font, "Quit?", BLACK, (514, 247))
+                
+                    
 pygame.quit()
