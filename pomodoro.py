@@ -1,4 +1,5 @@
 import pygame
+import time
 import os
 
 def fade(*surfacencoords: tuple):
@@ -9,21 +10,6 @@ def fade(*surfacencoords: tuple):
             screen.blit(surface, coordinates)
             pygame.time.delay(30)
         pygame.display.flip()
-
-def timer(time: list):
-    timerFont = pygame.font.Font(working_dir + r'assets\fonts\LexendGiga-ExtraLight.ttf', 100)
-    for minute in range(time[0], -1, -1):
-        for seconds in range(time[1], -1, -1):
-            print(f"{minute:02d}:{seconds:02d}")
-            timeText = timerFont.render(f"{minute:02d}:{seconds:02d}", False, BLACK)
-            screen.blit(timeText, ((width // 3) - 30, (height // 3) - 30))
-            pygame.display.flip()
-            pygame.time.delay(900)
-            timeText = timerFont.render(f"{minute:02d}:{seconds:02d}", False, BG)
-            screen.blit(timeText, ((width // 3) - 30, (height // 3) - 30))
-            pygame.event.clear()
-        if time[1] == 0:
-            time[1] = 59
 
 def displayButton(**buttons: tuple):
     buttonsToFade = []
@@ -53,7 +39,12 @@ running          = True
 startScreenFaded = False
 breakScreenFaded = False
 endScreenFaded   = False
-status           = "begin"
+firstTick = True
+status           = "break_timer"
+timer = [30, 0]
+breakTimer = [5, 0]
+timeWidth = width // 3 - 30
+timeHeight = height // 3 - 30
 
 # background and colors
 BG      = (223, 235, 247) 
@@ -69,6 +60,8 @@ subheader_font_medium = pygame.font.Font(working_dir + r'assets\fonts\LexendGiga
 subheader_font_small = pygame.font.Font(working_dir + r'assets\fonts\LexendGiga-ExtraLight.ttf', 40)
 subheader_font_large = pygame.font.Font(working_dir + r'assets\fonts\LexendGiga-ExtraLight.ttf', 80)
 button_font = pygame.font.Font(working_dir + r'assets\fonts\LexendGiga-Thin.ttf')
+
+timer_font = pygame.font.Font(working_dir + r'assets\fonts\LexendGiga-ExtraLight.ttf', 100)
 
 # sound setup
 button_select = pygame.mixer.Sound(working_dir + r"assets\sound_effects\button_select.mp3")
@@ -114,15 +107,47 @@ while running:
                     displayButton(b = ((GREY, (width // 2 - 30, 200, 70, 20)), (button_font, "Ready?", BLACK, (width // 2 - 20, 202), False)))
 
             case "ticking":
-                timer([0, 10])
 
-                pygame.mixer.music.load(working_dir + r"assets\sound_effects\argon.mp3")
-                pygame.mixer.music.play(5)
+                if firstTick:
+                    firstTick = False
+                    minute, seconds = timer
+                    timeText = timer_font.render(f"{minute:02d}:{seconds:02d}", False, BLACK)
+                    screen.blit(timeText, (timeWidth, timeHeight))
+                    print(minute, seconds, sep=':')
+                    timer[0] = timer[0] - 1 if timer[0] > 1 else 0
+                    timer[1] = 59 if timer[1] == 0 else timer[1] - 1
+                    lastTime = time.time()
 
-                finishedText = subheader_font_medium.render("Session Completed!", False, BLACK)
-                fade((finishedText,  (width - 725, height - 300)))
-                pygame.time.delay(1500)
-                status = "break"
+                elif time.time() - lastTime >= 1:
+                    if timer[1] == -1:
+                        minute, seconds = timer
+                        timeText = timer_font.render(f"{minute:02d}:{seconds:02d}", False, BG)
+                        screen.blit(timeText, (timeWidth, timeHeight))
+                        
+                        pygame.mixer.music.load(working_dir + r"assets\sound_effects\argon.mp3")
+                        pygame.mixer.music.play(5)
+                        screen.fill(BG)
+                        finishedText = subheader_font_medium.render("Session Completed!", False, BLACK)
+                        fade((finishedText,  (width - 725, height - 300)))
+                        pygame.time.delay(1500)
+                        firstTick = True
+                        timer = [30, 0]
+                        status = "break"
+                    else:
+                        timeText = timer_font.render(f"{minute:02d}:{seconds:02d}", False, BG)
+                        screen.blit(timeText, (timeWidth, timeHeight))
+
+                        minute, seconds = timer
+                        timeText = timer_font.render(f"{minute:02d}:{seconds:02d}", False, BLACK)
+                        screen.blit(timeText, (timeWidth, timeHeight))
+                        print(minute, seconds, sep=':')
+                        timer[1] = timer[1] - 1
+                        lastTime = time.time()
+
+                if timer[0] != 0 and timer[1] == 0:
+                    timer[0] -= 1
+                    timer[1] = 59
+
             
             case "break":
                 rectCoordinates = (318, 218, 150, 20)
@@ -147,15 +172,48 @@ while running:
                         displayButton(b = ((GREY, rectCoordinates), (button_font, "Begin the chill!", BLACK, textCoordinates, False)))
                         fade((buttonBG, (318, 218)), (headerBG, (30, 145)))
 
-                        timer([0, 5])
-
-                        pygame.mixer.music.load(working_dir + r"assets\sound_effects\argon.mp3")
-                        pygame.mixer.music.play(3)
-
-                        status = "end"
+                        status = "break_timer"
                 else:
                     displayButton(b = ((GREY, rectCoordinates), (button_font, "Begin Break?", BLACK, textCoordinates, False)))
-                
+            
+            case "break_timer":
+                if firstTick:
+                    firstTick = False
+                    minute, seconds = breakTimer
+                    timeText = timer_font.render(f"{minute:02d}:{seconds:02d}", False, BLACK)
+                    screen.blit(timeText, (timeWidth, timeHeight))
+                    print(minute, seconds, sep=':')
+                    breakTimer[0] = breakTimer[0] - 1 if breakTimer[0] > 1 else 0
+                    breakTimer[1] = 59 if breakTimer[1] == 0 else breakTimer[1] - 1
+                    lastTime = time.time()
+
+                elif time.time() - lastTime >= 1:
+                    if breakTimer[1] == -1:
+                        minute, seconds = breakTimer
+                        timeText = timer_font.render(f"{minute:02d}:{seconds:02d}", False, BG)
+                        screen.blit(timeText, (timeWidth, timeHeight))
+                        
+                        pygame.mixer.music.load(working_dir + r"assets\sound_effects\argon.mp3")
+                        pygame.mixer.music.play(5)
+                        screen.fill(BG)
+                        firstTick = True
+                        breakTimer = [5, 0]
+                        status = "end"
+                    else:
+                        timeText = timer_font.render(f"{minute:02d}:{seconds:02d}", False, BG)
+                        screen.blit(timeText, (timeWidth, timeHeight))
+
+                        minute, seconds = breakTimer
+                        timeText = timer_font.render(f"{minute:02d}:{seconds:02d}", False, BLACK)
+                        screen.blit(timeText, (timeWidth, timeHeight))
+                        print(minute, seconds, sep=':')
+                        breakTimer[1] = breakTimer[1] - 1
+                        lastTime = time.time()
+
+                if breakTimer[0] != 0 and breakTimer[1] == 0:
+                    breakTimer[0] -= 1
+                    breakTimer[1] = 59
+
             case "end":
                 rectCoordinates_Button1 = (200, 245, 130, 20)
                 textCoordinates_Button1 = (210, 247)
@@ -204,4 +262,5 @@ while running:
                 else:
                     displayButton(b1 = ((GREY, rectCoordinates_Button1), (button_font, "Home Screen?", BLACK, textCoordinates_Button1, False)), b2 = ((GREY, rectCoordinates_Button2), (button_font, "Quit?", BLACK, textCoordinates_Button2, False)))      
     
+        pygame.display.flip()
 pygame.quit()
