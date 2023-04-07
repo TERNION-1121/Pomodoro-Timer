@@ -40,7 +40,7 @@ startScreenFaded = False
 breakScreenFaded = False
 endScreenFaded   = False
 firstTick = True
-status           = "break_timer"
+status           = "begin"
 timer = [30, 0]
 breakTimer = [5, 0]
 timeWidth = width // 3 - 30
@@ -68,9 +68,11 @@ button_select = pygame.mixer.Sound(working_dir + r"assets\sound_effects\button_s
 
 # event loop
 while running:  
+        iTime = time.time()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+                
         pygame.display.flip()
         mouse = pygame.mouse.get_pos()
         match status:
@@ -107,13 +109,14 @@ while running:
                     displayButton(b = ((GREY, (width // 2 - 30, 200, 70, 20)), (button_font, "Ready?", BLACK, (width // 2 - 20, 202), False)))
 
             case "ticking":
+                dt = time.time() - iTime
+                timer[1] = timer[1] - int(dt) if dt > 1 else timer[1]
 
                 if firstTick:
                     firstTick = False
                     minute, seconds = timer
                     timeText = timer_font.render(f"{minute:02d}:{seconds:02d}", False, BLACK)
                     screen.blit(timeText, (timeWidth, timeHeight))
-                    print(minute, seconds, sep=':')
                     timer[0] = timer[0] - 1 if timer[0] > 1 and timer[1] == 0 else (0 if timer[0] == 0 else timer[0])
                     timer[1] = 59 if timer[1] == 0 else timer[1] - 1
                     lastTime = time.time()
@@ -140,14 +143,12 @@ while running:
                         minute, seconds = timer
                         timeText = timer_font.render(f"{minute:02d}:{seconds:02d}", False, BLACK)
                         screen.blit(timeText, (timeWidth, timeHeight))
-                        print(minute, seconds, sep=':')
                         timer[1] = timer[1] - 1
                         lastTime = time.time()
 
                         if timer[0] != 0 and timer[1] == -1:
                             timer[0] -= 1
                             timer[1] = 59
-
             
             case "break":
                 rectCoordinates = (318, 218, 150, 20)
@@ -177,18 +178,19 @@ while running:
                     displayButton(b = ((GREY, rectCoordinates), (button_font, "Begin Break?", BLACK, textCoordinates, False)))
             
             case "break_timer":
+                dt = time.time() - iTime
+                breakTimer[1] = breakTimer[1] - int(dt) if dt > 1 else breakTimer[1]
+
                 if firstTick:
                     firstTick = False
                     minute, seconds = breakTimer
                     timeText = timer_font.render(f"{minute:02d}:{seconds:02d}", False, BLACK)
                     screen.blit(timeText, (timeWidth, timeHeight))
-                    print(minute, seconds, sep=':')
                     breakTimer[0] = breakTimer[0] - 1 if breakTimer[0] > 1 and breakTimer[1] == 0 else(0 if breakTimer[0] == 0 else breakTimer[0])
                     breakTimer[1] = 59 if breakTimer[1] == 0 else breakTimer[1] - 1
                     lastTime = time.time()
-
-                elif time.time() - lastTime >= 1:
-                    if breakTimer[1] == -1:
+                elif time.time() - lastTime >= 0.980:
+                    if breakTimer[0] == 0 and breakTimer[1] == -1:
                         minute, seconds = breakTimer
                         timeText = timer_font.render(f"{minute:02d}:{seconds:02d}", False, BG)
                         screen.blit(timeText, (timeWidth, timeHeight))
@@ -206,7 +208,6 @@ while running:
                         minute, seconds = breakTimer
                         timeText = timer_font.render(f"{minute:02d}:{seconds:02d}", False, BLACK)
                         screen.blit(timeText, (timeWidth, timeHeight))
-                        print(minute, seconds, sep=':')
                         breakTimer[1] = breakTimer[1] - 1
                         lastTime = time.time()
 
@@ -261,6 +262,4 @@ while running:
                         running = False
                 else:
                     displayButton(b1 = ((GREY, rectCoordinates_Button1), (button_font, "Home Screen?", BLACK, textCoordinates_Button1, False)), b2 = ((GREY, rectCoordinates_Button2), (button_font, "Quit?", BLACK, textCoordinates_Button2, False)))      
-
-        pygame.display.flip()
 pygame.quit()
