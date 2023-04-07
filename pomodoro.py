@@ -114,12 +114,12 @@ while running:
                     timeText = timer_font.render(f"{minute:02d}:{seconds:02d}", False, BLACK)
                     screen.blit(timeText, (timeWidth, timeHeight))
                     print(minute, seconds, sep=':')
-                    timer[0] = timer[0] - 1 if timer[0] > 1 else 0
+                    timer[0] = timer[0] - 1 if timer[0] > 1 and timer[1] == 0 else (0 if timer[0] == 0 else timer[0])
                     timer[1] = 59 if timer[1] == 0 else timer[1] - 1
                     lastTime = time.time()
 
                 elif time.time() - lastTime >= 1:
-                    if timer[1] == -1:
+                    if timer[0] == 0 and timer[1] == -1:
                         minute, seconds = timer
                         timeText = timer_font.render(f"{minute:02d}:{seconds:02d}", False, BG)
                         screen.blit(timeText, (timeWidth, timeHeight))
@@ -144,9 +144,9 @@ while running:
                         timer[1] = timer[1] - 1
                         lastTime = time.time()
 
-                if timer[0] != 0 and timer[1] == 0:
-                    timer[0] -= 1
-                    timer[1] = 59
+                        if timer[0] != 0 and timer[1] == -1:
+                            timer[0] -= 1
+                            timer[1] = 59
 
             
             case "break":
@@ -183,7 +183,7 @@ while running:
                     timeText = timer_font.render(f"{minute:02d}:{seconds:02d}", False, BLACK)
                     screen.blit(timeText, (timeWidth, timeHeight))
                     print(minute, seconds, sep=':')
-                    breakTimer[0] = breakTimer[0] - 1 if breakTimer[0] > 1 else 0
+                    breakTimer[0] = breakTimer[0] - 1 if breakTimer[0] > 1 and breakTimer[1] == 0 else(0 if breakTimer[0] == 0 else breakTimer[0])
                     breakTimer[1] = 59 if breakTimer[1] == 0 else breakTimer[1] - 1
                     lastTime = time.time()
 
@@ -210,9 +210,9 @@ while running:
                         breakTimer[1] = breakTimer[1] - 1
                         lastTime = time.time()
 
-                if breakTimer[0] != 0 and breakTimer[1] == 0:
-                    breakTimer[0] -= 1
-                    breakTimer[1] = 59
+                        if breakTimer[0] != 0 and breakTimer[1] == -1:
+                            breakTimer[0] -= 1
+                            breakTimer[1] = 59
 
             case "end":
                 rectCoordinates_Button1 = (200, 245, 130, 20)
@@ -261,6 +261,6 @@ while running:
                         running = False
                 else:
                     displayButton(b1 = ((GREY, rectCoordinates_Button1), (button_font, "Home Screen?", BLACK, textCoordinates_Button1, False)), b2 = ((GREY, rectCoordinates_Button2), (button_font, "Quit?", BLACK, textCoordinates_Button2, False)))      
-    
+
         pygame.display.flip()
 pygame.quit()
