@@ -29,7 +29,7 @@ pygame.init()
 
 # basic initilizations/setup
 working_dir = os.getcwd().replace(r"\dist", "") + "\\"
-icon = pygame.image.load(working_dir + r"assets\Pomodoro_Timer_Icon.png")
+icon = pygame.image.load(working_dir + r"assets\icons\pomodoro_timer.ico")
 width, height = 768, 432
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_icon(icon)
