@@ -39,12 +39,15 @@ pygame.display.set_caption("Pomodoro Timer")
 running             = True
 startScreenFaded    = False
 breakScreenFaded    = False
+bigBreakScreenFaded = False
 endScreenFaded      = False
 firstTick           = True
 status              = "begin"
 
 mainTimer = [30, 0]
 breakTimer = [5, 0]
+bigBreakTimer = [20, 0]
+totalSessionPeriod = 0
 timeWidth = width // 3 - 30
 timeHeight = height // 3 - 30
 
@@ -58,9 +61,11 @@ screen.fill(BG)
 
 # font setup
 header_font             = pygame.font.Font(working_dir + r'assets\fonts\LexendGiga-Regular.ttf', 40)
+subheader_font_large    = pygame.font.Font(working_dir + r'assets\fonts\LexendGiga-ExtraLight.ttf', 80)
 subheader_font_medium   = pygame.font.Font(working_dir + r'assets\fonts\LexendGiga-ExtraLight.ttf', 55)
 subheader_font_small    = pygame.font.Font(working_dir + r'assets\fonts\LexendGiga-ExtraLight.ttf', 40)
-subheader_font_large    = pygame.font.Font(working_dir + r'assets\fonts\LexendGiga-ExtraLight.ttf', 80)
+basic_font              = pygame.font.Font(working_dir + r'assets\fonts\LexendGiga-ExtraLight.ttf', 27)
+bold_font               = pygame.font.Font(working_dir + r'assets\fonts\LexendGiga-Thin.ttf', 130)
 button_font             = pygame.font.Font(working_dir + r'assets\fonts\LexendGiga-Thin.ttf')
 timer_font              = pygame.font.Font(working_dir + r'assets\fonts\LexendGiga-ExtraLight.ttf', 100)
 

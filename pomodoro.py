@@ -45,7 +45,7 @@ while running:
         case "ticking":
             dt = int(time.time() - iTime)
             mainTimer[1] = mainTimer[1] - dt if dt > 1 and dt <= mainTimer[1] else (-1 if dt > mainTimer[1] else mainTimer[1])
-
+            
             if firstTick:
                 minute, seconds = mainTimer
                 timeText = timer_font.render(f"{minute:02d}:{seconds:02d}", False, BLACK)
@@ -67,13 +67,10 @@ while running:
                     pygame.mixer.music.load(working_dir + r"assets\sound_effects\argon.mp3")
                     pygame.mixer.music.play(5)
 
-                    finishedText = subheader_font_medium.render("Session Completed!", False, BLACK)
-                    fade((finishedText,  (width - 725, height - 300)))
-                    pygame.time.delay(1500)
-
                     firstTick = True
                     mainTimer = [30, 0]
-                    status = "break"
+                    totalSessionPeriod += mainTimer[0]
+                    status = "big_break" if totalSessionPeriod >= 120 else "break"
                 else:
                     timeText = timer_font.render(f"{minute:02d}:{seconds:02d}", False, BG)
                     screen.blit(timeText, (timeWidth, timeHeight))
@@ -94,6 +91,9 @@ while running:
             textCoordinates = (340, 220)
 
             if not breakScreenFaded:
+                finishedText = subheader_font_medium.render("Session Completed!", False, BLACK)
+                fade((finishedText,  (width - 725, height - 300)))
+                pygame.time.delay(1500)
                 displayButton(b = ((GREY, rectCoordinates), (button_font, "Begin Break?", BLACK, textCoordinates, True)))
                 breakScreenFaded = True
 
@@ -140,6 +140,7 @@ while running:
 
                     firstTick = True
                     breakTimer = [5, 0]
+                    totalSessionPeriod += breakTimer[0] + 120
                     status = "end"
                 else:
                     timeText = timer_font.render(f"{minute:02d}:{seconds:02d}", False, BG)
@@ -155,6 +156,79 @@ while running:
                         breakTimer[0] -= 1
                         breakTimer[1] = 59
 
+        case "big_break":
+
+            rectCoordinates = (318, 248, 164, 20)
+            textCoordinates = (324, 250)
+
+            if not bigBreakScreenFaded:
+                workedBigFont = subheader_font_medium.render("You worked ", False, BLACK)
+                breakBigFont  = basic_font.render("So have a break that's", False, BLACK)
+                bigFont       = bold_font.render("BIG!", False, BLACK)
+                fade((workedBigFont, (20, 120)), (breakBigFont, (30, 192)), (bigFont, (420, 90)))
+
+                displayButton(b = ((GREY, rectCoordinates), (button_font, "Begin the Big Break?", BLACK, textCoordinates, True)))
+                bigBreakScreenFaded = True
+
+            elif 318 <= mouse[0] <= 482 and 248 <= mouse[1] <= 268:
+                displayButton(b = ((DARK_GREY, rectCoordinates), (button_font, "Begin the Big Break?", WHITE, textCoordinates, False)))
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    pygame.mixer.music.stop()
+                    pygame.mixer.Sound.play(button_select)
+
+                    buttonBG = pygame.Surface((180, 30))
+                    headerBG = pygame.Surface((750, 120))
+                    buttonBG.fill(BG)
+                    headerBG.fill(BG)
+                        
+                    displayButton(b = ((GREY, rectCoordinates), (button_font, "Begin the BIG CHILL!", BLACK, textCoordinates, False)))
+                    fade((buttonBG, (318, 248)), (headerBG, (24, 120)))
+
+                    status = "big_break_timer"
+            else:
+                displayButton(b = ((GREY, rectCoordinates), (button_font, "Begin the Big Break?", BLACK, textCoordinates, False)))
+
+        case "big_break_timer":
+            dt = int(time.time() - iTime)
+            bigBreakTimer[1] = bigBreakTimer[1] - dt if dt > 1 and dt <= bigBreakTimer[1] else (-1 if dt > bigBreakTimer[1] else bigBreakTimer[1])
+
+            if firstTick:
+                firstTick = False
+                minute, seconds = bigBreakTimer
+                timeText = timer_font.render(f"{minute:02d}:{seconds:02d}", False, BLACK)
+                screen.blit(timeText, (timeWidth, timeHeight))
+                bigBreakTimer[0] = bigBreakTimer[0] - 1 if bigBreakTimer[0] > 1 and bigBreakTimer[1] == 0 else(0 if bigBreakTimer[0] == 0 else bigBreakTimer[0])
+                bigBreakTimer[1] = 59 if bigBreakTimer[1] == 0 else bigBreakTimer[1] - 1
+                lastTime = time.time()
+            elif time.time() - lastTime >= 0.990:
+                if bigBreakTimer[0] == 0 and bigBreakTimer[1] == -1:
+                    minute, seconds = bigBreakTimer
+                    timeText = timer_font.render(f"{minute:02d}:{seconds:02d}", False, BG)
+                    screen.blit(timeText, (timeWidth, timeHeight))
+                    screen.fill(BG)
+                        
+                    pygame.mixer.music.load(working_dir + r"assets\sound_effects\argon.mp3")
+                    pygame.mixer.music.play(5)
+
+                    firstTick = True
+                    bigBreakTimer = [20, 0]
+                    totalSessionPeriod = 0
+                    status = "end"
+                else:
+                    timeText = timer_font.render(f"{minute:02d}:{seconds:02d}", False, BG)
+                    screen.blit(timeText, (timeWidth, timeHeight))
+
+                    minute, seconds = bigBreakTimer
+                    timeText = timer_font.render(f"{minute:02d}:{seconds:02d}", False, BLACK)
+                    screen.blit(timeText, (timeWidth, timeHeight))
+                    bigBreakTimer[1] = bigBreakTimer[1] - 1
+                    lastTime = time.time()
+
+                    if bigBreakTimer[0] != 0 and bigBreakTimer[1] == -1:
+                        bigBreakTimer[0] -= 1
+                        bigBreakTimer[1] = 59
+        
         case "end":
             rectCoordinates_Button1 = (200, 245, 130, 20)
             textCoordinates_Button1 = (210, 247)
