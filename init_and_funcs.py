@@ -44,6 +44,7 @@ breakScreenFaded    = False
 bigBreakScreenFaded = False
 endScreenFaded      = False
 firstTick           = True
+paused              = False
 status              = "begin"
 
 mainTimer  = [25, 0]
@@ -85,7 +86,10 @@ timer_font              = pygame.font.Font(working_dir + r'assets\fonts\LexendGi
 note_font               = pygame.font.Font(working_dir + r'assets\fonts\LexendGiga-ExtraLight.ttf', 10)
 
 # sound setup
+birds_chirps = pygame.mixer.Sound(working_dir + r"assets\sound_effects\birds_chirp.mp3")
+owl_hooting = pygame.mixer.Sound(working_dir + r"assets\sound_effects\owl_hooting.mp3")
 button_select = pygame.mixer.Sound(working_dir + r"assets\sound_effects\button_select.mp3")
 music_queue = (music_dir + r"\chill-lofi-song.mp3", music_dir + r"\embrace.mp3", music_dir + r"\empty-mind.mp3", music_dir + r"\let-it-go.mp3",
                 music_dir + r"\lofi-chill.mp3", music_dir + r"\lofi-study.mp3", music_dir + r"\rain-and-nostalgia.mp3", music_dir + r"\spirit-blossom.mp3",
-                music_dir + r"\the-weekend.mp3", music_dir + r"\watr-fluid.mp3")
+                music_dir + r"\the-weekend.mp3", music_dir + r"\watr-fluid.mp3", music_dir + r"\storm-clouds.mp3", music_dir + r'\Calm-and-Peaceful.mp3',
+                music_dir + r"\serendipity.mp3", music_dir + r"\lost-in-thought", music_dir + r'\dreaming.mp3', music_dir + r'\lurk-late.mp3')

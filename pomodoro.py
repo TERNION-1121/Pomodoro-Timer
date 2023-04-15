@@ -9,10 +9,21 @@ while running:
             running = False
 
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_m:
+            if event.key == pygame.K_l:
                 colorIndex = not colorIndex
                 screen.fill(BG[colorIndex])
-        
+                if colorIndex == 0:
+                    pygame.mixer.Sound.play(birds_chirps, fade_ms = 2000)
+                else:
+                    pygame.mixer.Sound.play(owl_hooting, fade_ms = 2000)
+            elif event.key == pygame.K_m:
+                if not paused:
+                    pygame.mixer.music.pause()
+                    paused = True
+                else:
+                    pygame.mixer.music.unpause()
+                    paused = False
+
     pygame.display.flip()
     mouse = pygame.mouse.get_pos()
     match status:
@@ -21,17 +32,19 @@ while running:
             rectCoordinates = (width // 2 - 30, 200, 70, 20)
             textCoordinates = (width // 2 - 20, 202)
             mainFont = header_font.render("Pomodoro Timer", False, TEXT[colorIndex])
+            noteFont = note_font.render("Press 'M' to mute music during sessions, and 'L' to switch color modes.", False, TEXT[colorIndex])
 
             if not startScreenFaded:
                 fade((mainFont, (178, 128)))
                 pygame.time.delay(1000)
 
                 displayButton(b = ((BUTTON[colorIndex], rectCoordinates), (button_font, "Ready?", TEXT[colorIndex], textCoordinates, True)))
-
+                fade((noteFont, (150, 400)))
                 startScreenFaded = True
 
             elif (width // 2) - 30 <= mouse[0] <= (width // 2) + 40 and 200 <= mouse[1] <= 220:
                 displayButton(b = ((BUTTON_FOCUS[colorIndex], rectCoordinates), (button_font, "Ready?", BUTTON_TEXT[not colorIndex], textCoordinates, False)))
+                screen.blit(noteFont, (150, 400))
                 screen.blit(mainFont, (178, 128))
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     pygame.mixer.Sound.play(button_select)
@@ -43,14 +56,16 @@ while running:
 
                     headerBG = pygame.Surface((450, 50))
                     buttonBG = pygame.Surface((70, 20))
+                    noteBG   = pygame.Surface((500, 20))
                     headerBG.fill(BG[colorIndex])
                     buttonBG.fill(BG[colorIndex])
-
+                    noteBG.fill(BG[colorIndex])
                     displayButton(b = ((BUTTON[colorIndex], rectCoordinates), (button_font, "Begin!", TEXT[colorIndex], textCoordinates, False)))
-                    fade((headerBG, (178, 128)), (buttonBG, (width // 2 - 30, 200)))
+                    fade((headerBG, (178, 128)), (buttonBG, (width // 2 - 30, 200)), (noteBG, (150, 400)))
                     status = "ticking"
             else:
                 displayButton(b = ((BUTTON[colorIndex], (width // 2 - 30, 200, 70, 20)), (button_font, "Ready?", TEXT[colorIndex], (width // 2 - 20, 202), False)))
+                screen.blit(noteFont, (150, 400))
                 screen.blit(mainFont, (178, 128))
 
         case "ticking":
@@ -122,6 +137,11 @@ while running:
                     pygame.mixer.music.stop()
                     pygame.mixer.Sound.play(button_select)
 
+                    current_music_queue = list(random.sample(music_queue, 10))
+                    pygame.mixer.music.load(current_music_queue.pop(0))
+                    pygame.mixer.music.play(fade_ms= 3000)
+                    pygame.mixer.music.queue(current_music_queue.pop(0))
+
                     buttonBG = pygame.Surface((150, 20))
                     headerBG = pygame.Surface((750, 60))
                     buttonBG.fill(BG[colorIndex])
@@ -173,6 +193,12 @@ while running:
                     if breakTimer[0] != 0 and breakTimer[1] == -1:
                         breakTimer[0] -= 1
                         breakTimer[1] = 59
+                    
+                    elif breakTimer[0] == 0 and breakTimer[1] == 3:
+                        pygame.mixer.music.fadeout(3000)
+
+                if not pygame.mixer.music.get_busy() and len(current_music_queue) >= 1:
+                    pygame.mixer.music.queue(current_music_queue.pop(0))
 
         case "big_break":
 
@@ -196,6 +222,11 @@ while running:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     pygame.mixer.music.stop()
                     pygame.mixer.Sound.play(button_select)
+
+                    current_music_queue = list(random.sample(music_queue, 10))
+                    pygame.mixer.music.load(current_music_queue.pop(0))
+                    pygame.mixer.music.play(fade_ms= 3000)
+                    pygame.mixer.music.queue(current_music_queue.pop(0))
 
                     buttonBG = pygame.Surface((180, 30))
                     headerBG = pygame.Surface((750, 120))
@@ -251,6 +282,12 @@ while running:
                     if bigBreakTimer[0] != 0 and bigBreakTimer[1] == -1:
                         bigBreakTimer[0] -= 1
                         bigBreakTimer[1] = 59
+
+                    elif bigBreakTimer[0] == 0 and bigBreakTimer[1] == 3:
+                        pygame.mixer.music.fadeout(3000)
+                    
+                if not pygame.mixer.music.get_busy() and len(current_music_queue) >= 1:
+                    pygame.mixer.music.queue(current_music_queue.pop(0))
         
         case "end":
             rectCoordinates_Button1 = (200, 245, 130, 20)
