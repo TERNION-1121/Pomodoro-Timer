@@ -41,21 +41,20 @@ While coding this project, I had a simple approach in mind:
 - & Have sounds upon interactions with the application.
 
 Yet, to achieve these features, it took me long to fix the bugs that ocurred while coding it.
-I came to learn a lot of stuff on my own! But most importantly it was [@Legendary3995](https://github.com/Legendary3995) _(thanks a lot :D)_ who helped me to tackle the automatic pause upon holding the window at the title bar, a problem which _(almost)_ looked impossible to fix on my own.                                                                                                                                                              
+I came to learn a lot of stuff on my own! But most importantly it was [@Legendary3995](https://github.com/Legendary3995) _(thanks a lot :D)_ who helped me to tackle the automatic pause upon holding the window at the title bar, a problem which _(almost)_ looked impossible to fix on my own.                                                                         
 
-At the present moment, the application is at its [`pre-release v1.0.0`](https://github.com/TERNION-1121/Pomodoro-Timer/releases/tag/v1.0.0), with really simple features.
-For the future, I have many aspirations for the project, which I wish to achieve soon, maybe even before with the support of you all!
-- Adding the settings tab.
-- Adding the feature of customizing the main and the break timer.
-- Switching between light and dark mode.
-- Changing alarm sounds.
-- Adding a special slide/scene after completion of 3 or 4 Pomodoros.
+<br>
+
+**_Update:_**
+At the first release [`v1.1.0`](https://github.com/TERNION-1121/Pomodoro-Timer/releases/tag/v1.1.0), more of the below features were added:
+- Switch between light and dark mode using `L` key.
+- Music plays in between sessions, and it can be muted with the `M` key.
 
 <hr>
                                                                                                                                                                                                                               
 ## How to use the Project
 
-To download the application installer, head towards the pre-release section of this repository; or, [click here](https://github.com/TERNION-1121/Pomodoro-Timer/releases/download/v1.0.0/pomodoro-timer_setup.exe).                                                                                                                                                                                                                                         
+To download the application installer, head towards the pre-release section of this repository; or, [click here](https://github.com/TERNION-1121/Pomodoro-Timer/releases/download/v1.1.0/pomodoro-timer_setup.exe).                                                                                                                                                                                                                                         
 Run through the installer, and the click the Desktop Icon of the Pomodoro Timer to run the application.
 
 <br>
