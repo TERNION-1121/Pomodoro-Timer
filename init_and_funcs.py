@@ -1,4 +1,5 @@
 import pygame
+import random
 import time
 import os
 
@@ -28,7 +29,8 @@ def displayButton(**buttons: tuple):
 pygame.init()
 
 # basic initilizations/setup
-working_dir = os.getcwd().replace(r"\dist", "") + "\\"
+working_dir = os.getcwd().replace(r"\dist", "").replace(r"\pycache", "") + "\\"
+music_dir = working_dir + r'\assets\songs'
 icon = pygame.image.load(working_dir + r"assets\icons\pomodoro_timer.ico")
 width, height = 768, 432
 screen = pygame.display.set_mode((width, height))
@@ -44,7 +46,7 @@ endScreenFaded      = False
 firstTick           = True
 status              = "begin"
 
-mainTimer = [30, 0]
+mainTimer  = [25, 0]
 breakTimer = [5, 0]
 bigBreakTimer = [20, 0]
 totalSessionPeriod = 0
@@ -52,12 +54,24 @@ timeWidth = width // 3 - 30
 timeHeight = height // 3 - 30
 
 # background and colors
-BG          = (223, 235, 247) 
-BLACK       = (0, 0, 0)
-GREY        = (200, 210, 224)
-DARK_GREY   = (110, 112, 120)
-WHITE       = (228, 232, 247)
-screen.fill(BG)
+BG_LIGHT            = (223, 235, 247) 
+BG_DARK             = (47, 49, 54)
+TEXT_LIGHT          = (0, 0, 0)
+TEXT_DARK           = (228, 232, 247)
+BUTTON_LIGHT        = (200, 210, 224)
+BUTTON_TEXT_LIGHT   = (0, 0, 0)
+BUTTON_TEXT_DARK    = (255, 255, 255)
+BUTTON_FOCUS_LIGHT  = (110, 112, 120)
+BUTTON_FOCUS_DARK   = (235, 237, 243)
+WHITE               = (228, 232, 247)
+
+BG          = (BG_LIGHT, BG_DARK)
+TEXT        = (TEXT_LIGHT, TEXT_DARK)
+BUTTON      = (BUTTON_LIGHT, BG_DARK)
+BUTTON_FOCUS= (BUTTON_FOCUS_LIGHT, BUTTON_FOCUS_DARK)
+BUTTON_TEXT = (BUTTON_TEXT_LIGHT, BUTTON_TEXT_DARK)
+colorIndex  = 0
+screen.fill(BG[colorIndex])
 
 # font setup
 header_font             = pygame.font.Font(working_dir + r'assets\fonts\LexendGiga-Regular.ttf', 40)
@@ -68,6 +82,10 @@ basic_font              = pygame.font.Font(working_dir + r'assets\fonts\LexendGi
 bold_font               = pygame.font.Font(working_dir + r'assets\fonts\LexendGiga-Thin.ttf', 130)
 button_font             = pygame.font.Font(working_dir + r'assets\fonts\LexendGiga-Thin.ttf')
 timer_font              = pygame.font.Font(working_dir + r'assets\fonts\LexendGiga-ExtraLight.ttf', 100)
+note_font               = pygame.font.Font(working_dir + r'assets\fonts\LexendGiga-ExtraLight.ttf', 10)
 
 # sound setup
 button_select = pygame.mixer.Sound(working_dir + r"assets\sound_effects\button_select.mp3")
+music_queue = (music_dir + r"\chill-lofi-song.mp3", music_dir + r"\embrace.mp3", music_dir + r"\empty-mind.mp3", music_dir + r"\let-it-go.mp3",
+                music_dir + r"\lofi-chill.mp3", music_dir + r"\lofi-study.mp3", music_dir + r"\rain-and-nostalgia.mp3", music_dir + r"\spirit-blossom.mp3",
+                music_dir + r"\the-weekend.mp3", music_dir + r"\watr-fluid.mp3")
