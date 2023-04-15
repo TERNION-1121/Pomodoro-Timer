@@ -30,7 +30,7 @@ pygame.init()
 
 # basic initilizations/setup
 working_dir = os.getcwd().replace(r"\dist", "").replace(r"\pycache", "") + "\\"
-music_dir = working_dir + r'\assets\songs'
+music_dir = working_dir + r'assets\songs'
 icon = pygame.image.load(working_dir + r"assets\icons\pomodoro_timer.ico")
 width, height = 768, 432
 screen = pygame.display.set_mode((width, height))
@@ -92,4 +92,4 @@ button_select = pygame.mixer.Sound(working_dir + r"assets\sound_effects\button_s
 music_queue = (music_dir + r"\chill-lofi-song.mp3", music_dir + r"\embrace.mp3", music_dir + r"\empty-mind.mp3", music_dir + r"\let-it-go.mp3",
                 music_dir + r"\lofi-chill.mp3", music_dir + r"\lofi-study.mp3", music_dir + r"\rain-and-nostalgia.mp3", music_dir + r"\spirit-blossom.mp3",
                 music_dir + r"\the-weekend.mp3", music_dir + r"\watr-fluid.mp3", music_dir + r"\storm-clouds.mp3", music_dir + r'\Calm-and-Peaceful.mp3',
-                music_dir + r"\serendipity.mp3", music_dir + r"\lost-in-thought", music_dir + r'\dreaming.mp3', music_dir + r'\lurk-late.mp3')
+                music_dir + r"\serendipity.mp3", music_dir + r"\lost-in-thought.mp3", music_dir + r'\dreaming.mp3', music_dir + r'\lurk-late.mp3')
